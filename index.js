@@ -27,9 +27,9 @@ async function run() {
     await client.connect();
 
     const booksCollection = client.db("online_shopping").collection("book_catalog");
-    const userCollection = client.db("online_shopping").collection("users");
+    const usersCollection = client.db("online_shopping").collection("users");
 
-    
+    // books
     app.get('/books', async (req, res) => {
       const result = await booksCollection.find().toArray();
       res.send(result)
@@ -46,6 +46,20 @@ async function run() {
     app.post('/books', async (req, res) => {
       const bookData=req.body;
       const result = await booksCollection.insertOne(bookData);
+      res.send(result)
+    })
+
+
+    // users
+    app.post('/users', async (req, res) => {
+      const usersInfo=req.body;
+      const result = await usersCollection.insertOne(usersInfo);
+      res.send(result)
+    })
+
+    app.get('/users', async (req, res) => {
+      // const usersInfo=req.body;
+      const result = await usersCollection.find().toArray();
       res.send(result)
     })
 
