@@ -44,7 +44,7 @@ async function run() {
     })
 
     app.post('/books', async (req, res) => {
-      const bookData=req.body;
+      const bookData = req.body;
       const result = await booksCollection.insertOne(bookData);
       res.send(result)
     })
@@ -52,7 +52,12 @@ async function run() {
 
     // users
     app.post('/users', async (req, res) => {
-      const usersInfo=req.body;
+      const usersInfo = req.body;
+      const query = { email: usersInfo?.email }
+      const existingUser = await usersCollection.findOne(query)
+      if (existingUser) {
+        return res.send({ message: 'User Already Exists' })
+      }
       const result = await usersCollection.insertOne(usersInfo);
       res.send(result)
     })
@@ -62,6 +67,8 @@ async function run() {
       const result = await usersCollection.find().toArray();
       res.send(result)
     })
+
+
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
