@@ -28,6 +28,7 @@ async function run() {
 
     const booksCollection = client.db("online_shopping").collection("book_catalog");
     const usersCollection = client.db("online_shopping").collection("users");
+    const cartsCollection = client.db("online_shopping").collection("carts");
 
     // books
     app.get('/books', async (req, res) => {
@@ -78,12 +79,83 @@ async function run() {
           role: 'Admin'
         },
       };
-      
+
       const result = await usersCollection.updateOne(filter, updateDoc)
       res.send(result)
     })
 
+    //user admin delete
+    app.delete('/users/admin/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await usersCollection.deleteOne(query)
+      res.send(result)
+    })
 
+    //user admin get
+    // app.get('/users/admin/:email', async (req, res) => {
+    //   const email = req.params.email;
+
+    //   // if (req.decoded.email !== email) {
+    //   //   res.send({ admin: false })
+    //   // }
+
+    //   const query = { email: email }
+    //   const user = await usersCollection.findOne(query);
+    //   const result = { admin: user?.role === 'Admin' }
+    //   res.send(result);
+    // })
+
+    //update item
+    // app.put('/books/:id', async(req, res)=>{
+    //   const id=req.params.id;
+    //   const filter={ _id: new ObjectId(id) }
+    //   const updateDoc = {
+    //     $set: {
+    //       title, subtitle, price
+    //     },
+    //   };
+
+    //   const result = await booksCollection.updateOne(filter, updateDoc)
+    //   res.send(result)
+    // })
+
+    //cart item
+    app.post('/carts', async (req, res) => {
+      const item = req.body;
+      const result = await cartsCollection.insertOne(item)
+      res.send(result)
+    })
+    
+    //porer ta kaj na korle eta rekhe dibo
+    // app.get('/carts', async (req, res) => {
+    //   // const item = req.body;
+    //   const result = await cartsCollection.find().toArray()
+    //   res.send(result)
+    // })
+
+//TODO kaj korbo
+    app.get('/carts', async (req, res) => {
+      // const item = req.body;
+      const email = req.query.email;
+      if (!email) {
+        res.send([]);
+      }
+      const query = { email: email };
+      const result = await cartsCollection.find(query).toArray();
+      res.send(result);
+    })
+
+    app.delete('/carts/:id', async (req, res) => {
+      const id = req.params.id;
+      // console.log(id)
+      const query = { _id: new ObjectId(id) }
+      // console.log(query)
+      const result = await cartsCollection.deleteOne(query)
+      res.send(result)
+    })
+
+    
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
