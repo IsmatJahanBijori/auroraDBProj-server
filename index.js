@@ -127,17 +127,10 @@ async function run() {
       res.send(result)
     })
     
-    //porer ta kaj na korle eta rekhe dibo
-    // app.get('/carts', async (req, res) => {
-    //   // const item = req.body;
-    //   const result = await cartsCollection.find().toArray()
-    //   res.send(result)
-    // })
-
-//TODO kaj korbo
+   
     app.get('/carts', async (req, res) => {
-      // const item = req.body;
       const email = req.query.email;
+
       if (!email) {
         res.send([]);
       }
@@ -148,12 +141,20 @@ async function run() {
 
     app.delete('/carts/:id', async (req, res) => {
       const id = req.params.id;
-      // console.log(id)
+      
       const query = { _id: new ObjectId(id) }
-      // console.log(query)
+ 
       const result = await cartsCollection.deleteOne(query)
       res.send(result)
     })
+
+    
+
+
+
+
+
+
 
     
     // Send a ping to confirm a successful connection
